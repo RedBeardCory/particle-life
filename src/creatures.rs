@@ -8,7 +8,7 @@ use crate::{
     scene::Point,
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Creature {
     pub position: Point,
 
@@ -19,7 +19,16 @@ pub struct Creature {
     pub radius: f32,
 
     /// Colour of circle
-    color: Color,
+    pub color: Color,
+}
+
+pub fn get_random_color() -> Color {
+    Color::from_rgba(
+        rand::gen_range(0, 255),
+        rand::gen_range(0, 255),
+        rand::gen_range(0, 255),
+        255,
+    )
 }
 
 impl Default for Creature {
@@ -49,12 +58,7 @@ impl Creature {
             position,
             velocity,
             radius,
-            color: Color::from_rgba(
-                rand::gen_range(0, 255),
-                rand::gen_range(0, 255),
-                rand::gen_range(0, 255),
-                255,
-            ),
+            color: get_random_color(),
         }
     }
 

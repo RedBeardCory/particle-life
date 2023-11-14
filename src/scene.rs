@@ -4,10 +4,18 @@ use crate::{
 };
 use log::{debug, log_enabled, Level};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Point {
     pub x: f32,
     pub y: f32,
+}
+
+impl Point {
+    fn distance_from(&self, point: &Point) -> f32 {
+        let a_sqr = (point.x - self.x).powi(2);
+        let b_sqr = (point.y - self.y).powi(2);
+        (a_sqr + b_sqr).sqrt()
+    }
 }
 
 #[derive(Debug)]
@@ -52,14 +60,38 @@ impl Scene {
         // update all the creature's positions
         for creature in self.creatures.iter_mut() {
             creature.update(dt);
-            Self::check_collisions_and_update(creature);
+            Self::check_scene_collisions(creature);
         }
-    }
 
-    fn check_collisions_and_update(creature: &mut Creature) {
-        // check scene collisions
-        Self::check_scene_collisions(creature);
-        // check collisions beteen creatures
+        // use buffer to work around borrowing issues
+        let mut creature_buffer = self.creatures.clone();
+
+        for (i, creature_a) in self.creatures.iter().enumerate() {
+            for creature_b in self.creatures.iter() {
+                // check if they are the same and skip
+                if creature_a == creature_b {
+                    continue;
+                }
+
+                // check if they collide
+                // check the distance between the points
+                let dist = creature_a
+                    .position
+                    .distance_from(&creature_b.position)
+                    .abs();
+                if dist <= creature_a.radius + creature_b.radius {
+                    // collided
+                    // change color as indication
+                    creature_buffer.get_mut(i).unwrap().color =
+                        crate::creatures::get_random_color();
+
+                    // TODO: work out direction to move
+                }
+            }
+        }
+
+        // swap out buffer
+        self.creatures = creature_buffer;
     }
 
     fn check_scene_collisions(creature: &mut Creature) {
