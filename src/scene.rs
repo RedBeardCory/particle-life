@@ -29,6 +29,12 @@ fn init_creatures(num_creatures: i32) -> Vec<Creature> {
     creatures
 }
 
+impl Default for Scene {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Scene {
     pub fn new() -> Self {
         Scene {

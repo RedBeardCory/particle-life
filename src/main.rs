@@ -48,6 +48,7 @@ async fn main() {
     loop {
         clear_background(BLACK);
 
+        // draws border around play area
         draw_rectangle_lines(0.0, 0.0, WIDTH as f32, HEIGHT as f32, 1.0, RED);
 
         scene.display();

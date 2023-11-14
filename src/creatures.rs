@@ -22,6 +22,12 @@ pub struct Creature {
     color: Color,
 }
 
+impl Default for Creature {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Creature {
     pub fn new() -> Self {
         let radius = CREATURE_SIZE as f32;
